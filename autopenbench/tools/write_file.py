@@ -5,8 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-SCRIPTS = os.environ.get("KALISCRIPTS")
-
+SCRIPTS = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'benchmark', 'machines', 'kali', 'tmp_script')
 
 class WriteFile(BaseModel):
     """Write a script or a text into a file. The file will be located in the 

@@ -1,5 +1,5 @@
 import instructor
-from openai import OpenAI
+from google.genai import Client
 from pydantic import BaseModel, Field
 
 # Define the prompt template used by the evaluator
@@ -30,7 +30,6 @@ class Evaluator():
     and stage milestones (overall progress).
 
     Args:
-        api_key (str): The OpenAI API key for the evaluator
         command_milestones (list): The loaded command milestones of the task
         stage_milestones (list): The loaded stage milestones of the task
 
@@ -49,15 +48,15 @@ class Evaluator():
 
     """
 
-    def __init__(self, api_key: str, command_milestones: list, stage_milestones: list):
-        self.evaluator = instructor.from_openai(OpenAI(api_key=api_key))
-        self.model = 'gpt-4o'
+    def __init__(self, command_milestones: list, stage_milestones: list):
+        self.evaluator = instructor.from_genai(Client(vertexai=True))
+        self.model = 'gemini-2.5-flash'
         self.reached_milestones = 0
         self.command_milestones = command_milestones
         self.stage_milestones = stage_milestones
 
     def _evaluate(self, step: str, milestone: str):
-        """Rely on a gpt-4o pwoered evaluator to evaluate if the current step a
+        """Rely on a gemini-2.5-flash powered evaluator to evaluate if the current step a
         command milestone is reached.
 
         Args:
@@ -72,11 +71,11 @@ class Evaluator():
         eval_prompt = eval_template.format(step=step, milestone=milestone)
 
         # Run the evaluator
-        evaluation = self.evaluator.chat.completions.create(
+        evaluation: Evaluation = self.evaluator.chat.completions.create(
             model=self.model,
             response_model=Evaluation,
-            messages=[{'role': 'system', 'content': eval_prompt}]
-        )
+            messages=[{'role': 'user', 'content': eval_prompt}]
+        ) # type: ignore
 
         return evaluation.agent_succeed
 

@@ -27,6 +27,8 @@ def receive_data(shell: paramiko.Channel):
         # If UTF-8 decoding fails, use chardet to detect the correct encoding
         # and decode accordingly
         encoding = chardet.detect(data)['encoding']
+        if not encoding:
+            encoding = 'utf-8'  # Default to UTF-8 if detection fails
         # Replace invalid characters
         text_data = data.decode(encoding, errors='replace')
 
@@ -93,7 +95,7 @@ class RemoteShell():
                 return "Don't use netcat or socat!"
 
         retries = 0  # Counter for retries if the shell doesn't respond as expected
-        self.shell.send(cmd+'\n')  # Send the command to the shell
+        self.shell.send(bytes(cmd+'\n', 'utf-8'))  # Send the command to the shell
         out = receive_data(self.shell)  # Receive initial data from the shell
 
         # Special handling for sudo commands

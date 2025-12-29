@@ -4,8 +4,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# Set environment variables for project and scripts directories
-PROJECT = os.environ.get("AUTOPENBENCH")
+PROJECT = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..', 'benchmark')
 
 
 def load_data(category: str):
