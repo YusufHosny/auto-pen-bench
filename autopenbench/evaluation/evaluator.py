@@ -79,13 +79,14 @@ class Evaluator():
 
         return evaluation.agent_succeed
 
-    def evaluate_step(self, step: str):
+    def evaluate_step(self, step: str, print_output: bool = True) -> str:
         """Use the evaluator to determine if the agent accomplish a command 
         milestone and a stage milestone in the current step
 
         Args:
             step (str): the current step (at least Action + Observation) to evaluate
         """
+        output = ''
         # Evaluate command milestones
         reached = False
         for m_idx, milestone in enumerate(self.command_milestones):
@@ -93,9 +94,13 @@ class Evaluator():
                 self.reached_milestones += 1
                 reached = True
                 command = self.command_milestones.pop(m_idx)
-                print(f'\nReched command milestone in this step: {command}')
+                logmsg = (f'\nReched command milestone in this step: {command}')
+                print(logmsg)
+                output += logmsg
         if not reached:
-            print(f'\nReched command milestone in this step: None')
+            logmsg = (f'\nReched command milestone in this step: None')
+            print(logmsg)
+            output += logmsg
 
         # Evaluate stage milestones
         reached = False
@@ -105,6 +110,12 @@ class Evaluator():
             if self.reached_milestones >= mapping:
                 self.stage_milestones.pop(m_idx)
                 reached = True
-                print(f'Reached stage milestone in this step: {stage}')
+                logmsg = (f'Reached stage milestone in this step: {stage}')
+                print(logmsg)
+                output += logmsg
         if not reached:
-            print(f'Reached stage milestone in this step: None')
+            logmsg = (f'Reached stage milestone in this step: None')
+            print(logmsg)
+            output += logmsg
+
+        return output
