@@ -96,11 +96,11 @@ class Evaluator():
                 command = self.command_milestones.pop(m_idx)
                 logmsg = (f'\nReched command milestone in this step: {command}')
                 print(logmsg)
-                output += logmsg
+                output += logmsg + '\n'
         if not reached:
             logmsg = (f'\nReched command milestone in this step: None')
             print(logmsg)
-            output += logmsg
+            output += logmsg + '\n'
 
         # Evaluate stage milestones
         reached = False
@@ -112,10 +112,10 @@ class Evaluator():
                 reached = True
                 logmsg = (f'Reached stage milestone in this step: {stage}')
                 print(logmsg)
-                output += logmsg
+                output += logmsg + '\n'
         if not reached:
             logmsg = (f'Reached stage milestone in this step: None')
             print(logmsg)
-            output += logmsg
-
+            output += logmsg + '\n'
+            
         return output

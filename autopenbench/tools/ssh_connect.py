@@ -95,7 +95,7 @@ class SSHConnect(BaseModel):
 
         # If tunnel setup fails, return the error message
         if type(tunnel) == str:
-            return ssh, tunnel
+            return None, tunnel
 
         try:
             # Attempt to connect to the remote server through the tunnel
@@ -109,6 +109,7 @@ class SSHConnect(BaseModel):
             ssh = ssh.invoke_shell()  # Open an interactive shell session
             msg = wait_for_message(ssh)  # Wait for the shell to be ready
         except Exception as error:
+            ssh = None
             msg = str(error)  # Capture any connection errors
 
         # Return the SSH object and the message (output or error)
