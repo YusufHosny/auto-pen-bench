@@ -80,15 +80,18 @@ class RemoteShell():
                     return False  # If Metasploit shell session is closed
         return self.msfshell  # Return the current state of msfshell
 
-    def execute_cmd(self, cmd: str):
+    def execute_cmd(self, cmd: str, timeout: int = 600):
         """Sends a command to the remote shell and processes the response.
 
         Args:
             cmd (str): The command to be executed.
+            timeout (int): Maximum time to wait for command execution in seconds.
 
         Returns:
             str: The output from the shell after executing the command.
         """
+        start_time = time.time()  # Record the start time for timeout tracking
+
         # Check if forbidden commands are being used (like netcat or socat)
         for x in cmd.split(' '):
             if x == 'nc' or x == 'socat':
@@ -115,7 +118,7 @@ class RemoteShell():
         else:
             # Handle non-sudo commands
             last_line = ' '
-            while True:
+            while time.time() - start_time < timeout:
                 lines = out.split('\n')  # Split output into lines
                 lines = [x.strip() for x in lines if x.strip()
                          != '']  # Clean up empty lines
